@@ -16,13 +16,11 @@ export async function POST(req: NextRequest) {
   });
 
   const buf = await Packer.toBuffer(doc);
-  // Buffer(Node) -> ArrayBuffer pour Response
-  const body = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
-
-  return new Response(body, {
-    headers: {
-      "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "Content-Disposition": `attachment; filename=HelvetiLex_${Date.now()}.docx`,
-    },
-  });
+// ✅ Utiliser Uint8Array (compatible BodyInit)
+return new Response(new Uint8Array(buf), {
+  headers: {
+    "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "Content-Disposition": `attachment; filename=HelvetiLex_${Date.now()}.docx`,
+  },
+});
 }
